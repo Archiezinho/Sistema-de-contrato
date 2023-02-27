@@ -1,0 +1,93 @@
+$(function() {//função anonima que somente é disparada dspois do carregamento do DOM
+
+    // Atribui evento e função para limpeza dos campos
+    $('#busca').on('input', limpaCampos);
+
+    // Dispara o Autocomplete a partir do segundo caracter
+    $( "#busca" ).autocomplete({
+	    minLength: 1,
+	    source: function( request, response ) {
+	        $.ajax({
+	            url: "json/listaempresa.php",
+	            dataType: "json",
+	            data: {
+	            	acao: 'autocomplete',
+	                parametro: $('#busca').val()
+	            },
+	            success: function(data) {
+	               response(data);
+	            }
+	        });
+	    },
+	    focus: function( event, ui ) {
+	        $("#busca").val( ui.item.nome );
+	        carregarDados();
+	        return false;
+	    },
+	    select: function( event, ui ) {
+	        $("#busca").val( ui.item.CNPJ );
+	        return false;
+	    }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      return $( "<li>" )
+        .append( "<a>Nome: " + item.nome + "  CNPJ: " + item.CNPJ + "</a><br>" )
+        .appendTo( ul );
+    };
+
+    // Função para carregar os dados da consulta nos respectivos campos
+    function carregarDados(){
+    	var busca = $('#busca').val();
+
+    	if(busca != "" && busca.length >= 1){
+    		$.ajax({
+	            url: "json/listaempresa.php",
+	            dataType: "json",	
+	            data: {
+	            	acao: 'consulta',
+	                parametro: $('#busca').val()
+	            },
+	            success: function( data ) {
+                   $('#codigo').val(data[0].cod); 
+				   $('#razao').val(data[0].razao);
+	               $('#nome').val(data[0].nome);
+	               $('#cnpj').val(data[0].CNPJ);
+	               $('#inscricao').val(data[0].Inscricao);
+				   $('#rua').val(data[0].rua);
+				   $('#numero').val(data[0].numero);
+				   $('#bairro').val(data[0].bairro);
+				   $('#cidade').val(data[0].cidade);
+	               $('#estado').val(data[0].estado);
+				   $('#telefone').val(data[0].telefone);
+	               $('#email').val(data[0].email);
+                   $('#responsavel').val(data[0].responsavel);
+				   $('#naturezaJuridica').val(data[0].naturezaJuridica);
+                       
+                     
+	            }
+	        });
+    	}
+    }
+
+    // Função para limpar os campos caso a busca esteja vazia
+    function limpaCampos(){
+       var busca = $('#busca').val();
+
+       if(busca == ""){
+		$('#razao').val('');
+        $('#nome').val('')
+        $('#cnpj').val('');
+        $('#inscricao').val('');
+        $('#rua').val('');
+		$('#numero').val('');
+		$('#bairro').val('');
+        $('#cidade').val('');
+        $('#estado').val('');
+		$('#email').val('');
+        $('#telefone').val('');
+        $('#responsavel').val('');
+        $('#naturezaJuridica').val('');  
+       }
+    }
+});
+

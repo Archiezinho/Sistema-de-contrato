@@ -1,0 +1,61 @@
+	 <?php
+session_start();
+require '../classes/conexao.php';
+require_once 'procedimentos.php';
+require_once '../classes/contrato.php';
+
+$cod = isset($_POST['codigo']) ? $_POST['codigo'] : "";
+
+if($cod==""){
+	
+	$tipo= $_POST['tipo'];
+	$codFuncionario= $_POST['codFuncionario'];
+	$codEmpresa= $_POST['codEmpresa'];
+	$dataInicio= $_POST['dataInicio'];
+	$dataFim= $_POST['dataFim']==""? "0000-00-00":$_POST['dataFim'];
+	$cargo= $_POST['cargo'];
+	$cbo= $_POST['cbo'];
+	$salario= $_POST['salario'];
+	$jornada= $_POST['jornada'];
+	$experiencia= $_POST['experiencia'];
+	$diasExperiencia= $_POST['diasExperiencia'];
+	$valeTransporte= $_POST['valeTransporte'];
+	$periculosidade= $_POST['periculosidade'];
+	$insalubridade= $_POST['insalubridade'];
+	$escala= $_POST['escala'];
+echo "teste=".$dataFim; 
+$A = new contrato($cod,$tipo,$codFuncionario,$codEmpresa,$dataInicio, $dataFim,$cargo,$cbo,$salario, $jornada,$experiencia,$diasExperiencia,$valeTransporte, $periculosidade,$insalubridade,$escala);
+
+
+
+}
+
+
+
+
+
+
+$delete = isset($_POST['deletar']) ? $_POST['deletar'] : "";
+$alterar = isset($_POST['alterar']) ? $_POST['alterar'] : "";
+$salvar = isset($_POST['salvar']) ? $_POST['salvar'] : "";
+$mudar = isset($_POST['mudar']) ? $_POST['mudar'] : "";
+
+if ($delete) {
+    $A->deletar($conexao,$codigo);
+    $_SESSION['msg'] = "<div class='alert alert-success'>Usuario /Excluido com sucesso!</div>";
+    echo("<script type='text/javascript'> location.href='../consultausuarios.php';</script>");
+}
+
+
+if ($salvar) {
+
+    $A->insere($conexao);
+	print_r($A);
+    $_SESSION['msg'] = "<div class='alert alert-success'>Contrato cadastrado com sucesso!</div>";
+    //echo("<script type='text/javascript'> location.href='../cadastroContrato.php';</script>");
+}
+if ($mudar) {
+    $A->atualizasenha($codigo, $link);
+    $_SESSION['msg'] = "<div class='alert alert-success'>Senha atualizada com sucesso!</div>";
+    echo("<script type='text/javascript'> location.href='../index.php';</script>");
+}
